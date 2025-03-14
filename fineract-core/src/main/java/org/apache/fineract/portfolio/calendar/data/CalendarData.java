@@ -194,6 +194,51 @@ public final class CalendarData implements Serializable {
         this.duration = null;
     }
 
+    public CalendarData(String title, String description, LocalDate startDate, boolean repeating, EnumOptionData frequency,
+            Integer interval, EnumOptionData repeatsOnDay, String dateFormat, String locale, String typeId) {
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.repeating = repeating;
+        this.frequency = frequency;
+        this.interval = interval;
+        this.repeatsOnDay = repeatsOnDay;
+        this.dateFormat = dateFormat;
+        this.locale = locale;
+        this.typeId = typeId;
+
+        this.id = null;
+        this.calendarInstanceId = null;
+        this.entityId = null;
+        this.entityType = null;
+        this.location = null;
+        this.endDate = null;
+        this.duration = null;
+        this.recurrence = null;
+        this.repeatsOnNthDayOfMonth = null;
+        this.remindBy = null;
+        this.firstReminder = null;
+        this.secondReminder = null;
+        this.recurringDates = null;
+        this.nextTenRecurringDates = null;
+        this.humanReadable = null;
+        this.recentEligibleMeetingDate = null;
+        this.createdDate = null;
+        this.lastUpdatedDate = null;
+        this.createdByUserId = null;
+        this.createdByUsername = null;
+        this.lastUpdatedByUserId = null;
+        this.lastUpdatedByUsername = null;
+        this.repeatsOnDayOfMonth = null;
+        this.entityTypeOptions = null;
+        this.calendarTypeOptions = null;
+        this.remindByOptions = null;
+        this.frequencyOptions = null;
+        this.repeatsOnDayOptions = null;
+        this.frequencyNthDayTypeOptions = null;
+        this.meetingTime = null;
+    }
+
     public void setCenterId(String centerId) {
         this.centerId = centerId;
     }

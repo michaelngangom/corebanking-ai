@@ -95,10 +95,10 @@ public class CentersWorkbookPopulator extends AbstractWorkbookPopulator {
         writeString(CenterConstants.ACTIVATION_DATE_COL, rowHeader, "Activation Date*");
         writeString(CenterConstants.SUBMITTED_ON_DATE_COL, rowHeader, "Submitted On Date");
         writeString(CenterConstants.MEETING_START_DATE_COL, rowHeader, "Meeting Start Date* (On or After)");
-        writeString(CenterConstants.IS_REPEATING_COL, rowHeader, "Repeat*");
-        writeString(CenterConstants.FREQUENCY_COL, rowHeader, "Frequency*");
-        writeString(CenterConstants.INTERVAL_COL, rowHeader, "Interval*");
-        writeString(CenterConstants.REPEATS_ON_DAY_COL, rowHeader, "Repeats On*");
+        writeString(CenterConstants.IS_REPEATING_COL, rowHeader, "Repeat");
+        writeString(CenterConstants.FREQUENCY_COL, rowHeader, "Frequency");
+        writeString(CenterConstants.INTERVAL_COL, rowHeader, "Interval");
+        writeString(CenterConstants.REPEATS_ON_DAY_COL, rowHeader, "Repeats On");
         writeString(CenterConstants.GROUP_NAMES_STARTING_COL, rowHeader, "Group Names* (Enter in consecutive cells horizontally)");
         writeString(CenterConstants.LOOKUP_OFFICE_NAME_COL, rowHeader, "Office Name");
         writeString(CenterConstants.LOOKUP_OFFICE_OPENING_DATE_COL, rowHeader, "Opening Date");
@@ -161,8 +161,7 @@ public class CentersWorkbookPopulator extends AbstractWorkbookPopulator {
         DataValidationConstraint officeNameConstraint = validationHelper.createFormulaListConstraint("Office");
         DataValidationConstraint staffNameConstraint = validationHelper
                 .createFormulaListConstraint("INDIRECT(CONCATENATE(\"Staff_\",$B1))");
-        DataValidationConstraint activationDateConstraint = validationHelper.createDateConstraint(
-                DataValidationConstraint.OperatorType.BETWEEN, "=VLOOKUP($B1,$IR$2:$IS" + (offices.size() + 1) + ",2,FALSE)", "=TODAY()",
+        DataValidationConstraint activationDateConstraint = validationHelper.createDateConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=VLOOKUP($B1,$IR$2:$IS" + (offices.size() + 1) + ",2,FALSE)", "=TODAY()",
                 dateFormat);
         DataValidationConstraint booleanConstraint = validationHelper.createExplicitListConstraint(new String[] { "True", "False" });
         DataValidationConstraint submittedOnDateConstraint = validationHelper

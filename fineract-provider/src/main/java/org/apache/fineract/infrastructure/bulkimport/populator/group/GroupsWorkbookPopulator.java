@@ -38,6 +38,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
 
 public class GroupsWorkbookPopulator extends AbstractWorkbookPopulator {
 
@@ -54,6 +57,16 @@ public class GroupsWorkbookPopulator extends AbstractWorkbookPopulator {
         this.clientSheetPopulator = clientSheetPopulator;
     }
 
+
+
+    private void setFormatActivationAndSubmittedDate(Row row, int columnIndex, CellStyle cellStyle) {
+        Cell cell = row.getCell(columnIndex);
+        if (cell == null) {
+            cell = row.createCell(columnIndex);
+        }
+        cell.setCellStyle(cellStyle);
+    }
+
     @Override
     public void populate(Workbook workbook, String dateFormat) {
         Sheet groupSheet = workbook.createSheet(TemplatePopulateImportConstants.GROUP_SHEET_NAME);
@@ -63,8 +76,26 @@ public class GroupsWorkbookPopulator extends AbstractWorkbookPopulator {
         clientSheetPopulator.populate(workbook, dateFormat);
         setLayout(groupSheet);
         setLookupTable(groupSheet, dateFormat);
+         setFormatStyle(workbook, groupSheet);
         setRules(groupSheet, dateFormat);
 
+    }
+    private void setFormatStyle(Workbook workbook, Sheet worksheet) {
+        CellStyle dateCellStyle = workbook.createCellStyle();
+        CreationHelper createHelper = workbook.getCreationHelper();
+        dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("yyyy-MM-dd"));
+
+        for (int rowIndex = 1; rowIndex < SpreadsheetVersion.EXCEL97.getMaxRows(); rowIndex++) {
+            Row row = worksheet.getRow(rowIndex);
+            if (row == null) {
+                row = worksheet.createRow(rowIndex);
+            }
+
+            setFormatActivationAndSubmittedDate(row, GroupConstants.ACTIVATION_DATE_COL, dateCellStyle);
+            setFormatActivationAndSubmittedDate(row, GroupConstants.SUBMITTED_ON_DATE_COL, dateCellStyle);
+            setFormatActivationAndSubmittedDate(row, GroupConstants.MEETING_START_DATE_COL, dateCellStyle);
+
+        }
     }
 
     private void setLayout(Sheet worksheet) {
@@ -174,6 +205,8 @@ public class GroupsWorkbookPopulator extends AbstractWorkbookPopulator {
         DataValidationConstraint activationDateConstraint = validationHelper.createDateConstraint(
                 DataValidationConstraint.OperatorType.BETWEEN, "=VLOOKUP($B1,$IR$2:$IS" + (offices.size() + 1) + ",2,FALSE)", "=TODAY()",
                 dateFormat);
+
+
         DataValidationConstraint submittedOnDateConstraint = validationHelper
                 .createDateConstraint(DataValidationConstraint.OperatorType.LESS_OR_EQUAL, "=$G1", null, dateFormat);
         DataValidationConstraint meetingStartDateConstraint = validationHelper

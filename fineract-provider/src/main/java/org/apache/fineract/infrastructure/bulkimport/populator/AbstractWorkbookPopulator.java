@@ -20,9 +20,11 @@ package org.apache.fineract.infrastructure.bulkimport.populator;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.apache.fineract.organisation.office.data.OfficeData;
@@ -79,7 +81,7 @@ public abstract class AbstractWorkbookPopulator implements WorkbookPopulator {
             }
             LocalDate date1 = LocalDate.parse(value, formatinDB);
             DateTimeFormatter expectedFormat = new DateTimeFormatterBuilder().appendPattern(dateFormat).toFormatter();
-            row.createCell(colIndex).setCellValue(expectedFormat.format(date1));
+            row.createCell(colIndex).setCellValue(Date.from(date1.atStartOfDay(ZoneId.systemDefault()).toInstant()));
             row.getCell(colIndex).setCellStyle(dateCellStyle);
         } catch (DateTimeParseException pe) {
             throw new IllegalArgumentException(pe);
@@ -100,10 +102,9 @@ public abstract class AbstractWorkbookPopulator implements WorkbookPopulator {
             int rowIndex = 0;
             for (OfficeData office : offices) {
                 Row row = sheet.createRow(++rowIndex);
-                writeString(officeNameCol, row, office.getName().trim().replaceAll("[ )(]", "_"));
-                writeDate(activationDateCol, row, "" + office.getOpeningDate().getDayOfMonth() + "/"
-                        + office.getOpeningDate().getMonthValue() + "/" + office.getOpeningDate().getYear(), dateCellStyle, dateFormat);
-
+               writeString(officeNameCol, row, office.getName().trim().replaceAll("[ )(]", "_"));
+               writeDate(activationDateCol, row, "" + office.getOpeningDate().getDayOfMonth() + "/"
+                     + office.getOpeningDate().getMonthValue() + "/" + office.getOpeningDate().getYear(), dateCellStyle, dateFormat);
             }
         }
     }
