@@ -243,19 +243,9 @@ public class GroupImportHandler implements ImportHandler {
         gsonBuilder.registerTypeAdapter(LocalDate.class, new DateSerializer(dateFormat));
         gsonBuilder.registerTypeAdapter(EnumOptionData.class, new EnumOptionDataValueSerializer());
 
-
-        CalendarData modifiedCalendarData = new CalendarData(
-                calendarData.getTitle(),
-                calendarData.getDescription(),
-                calendarData.getStartDate(),
-                calendarData.isRepeating(),
-                calendarData.getFrequency(),
-                calendarData.getInterval(),
-                calendarData.getRepeatsOnDay(),
-                calendarData.getDateFormat(),
-                calendarData.getLocale(),
-                calendarData.getTypeId()
-        );
+        CalendarData modifiedCalendarData = new CalendarData(calendarData.getTitle(), calendarData.getDescription(),
+                calendarData.getStartDate(), calendarData.isRepeating(), calendarData.getFrequency(), calendarData.getInterval(),
+                calendarData.getRepeatsOnDay(), calendarData.getDateFormat(), calendarData.getLocale(), calendarData.getTypeId());
 
         String payload = gsonBuilder.create().toJson(modifiedCalendarData);
 

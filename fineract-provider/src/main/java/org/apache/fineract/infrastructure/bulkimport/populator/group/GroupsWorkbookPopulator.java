@@ -30,6 +30,9 @@ import org.apache.fineract.organisation.office.data.OfficeData;
 import org.apache.poi.hssf.usermodel.HSSFDataValidationHelper;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.SpreadsheetVersion;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.DataValidationConstraint;
 import org.apache.poi.ss.usermodel.DataValidationHelper;
@@ -38,9 +41,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddressList;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CreationHelper;
 
 public class GroupsWorkbookPopulator extends AbstractWorkbookPopulator {
 
@@ -56,8 +56,6 @@ public class GroupsWorkbookPopulator extends AbstractWorkbookPopulator {
         this.centerSheetPopulator = centerSheetPopulator;
         this.clientSheetPopulator = clientSheetPopulator;
     }
-
-
 
     private void setFormatActivationAndSubmittedDate(Row row, int columnIndex, CellStyle cellStyle) {
         Cell cell = row.getCell(columnIndex);
@@ -76,10 +74,11 @@ public class GroupsWorkbookPopulator extends AbstractWorkbookPopulator {
         clientSheetPopulator.populate(workbook, dateFormat);
         setLayout(groupSheet);
         setLookupTable(groupSheet, dateFormat);
-         setFormatStyle(workbook, groupSheet);
+        setFormatStyle(workbook, groupSheet);
         setRules(groupSheet, dateFormat);
 
     }
+
     private void setFormatStyle(Workbook workbook, Sheet worksheet) {
         CellStyle dateCellStyle = workbook.createCellStyle();
         CreationHelper createHelper = workbook.getCreationHelper();
@@ -205,7 +204,6 @@ public class GroupsWorkbookPopulator extends AbstractWorkbookPopulator {
         DataValidationConstraint activationDateConstraint = validationHelper.createDateConstraint(
                 DataValidationConstraint.OperatorType.BETWEEN, "=VLOOKUP($B1,$IR$2:$IS" + (offices.size() + 1) + ",2,FALSE)", "=TODAY()",
                 dateFormat);
-
 
         DataValidationConstraint submittedOnDateConstraint = validationHelper
                 .createDateConstraint(DataValidationConstraint.OperatorType.LESS_OR_EQUAL, "=$G1", null, dateFormat);
