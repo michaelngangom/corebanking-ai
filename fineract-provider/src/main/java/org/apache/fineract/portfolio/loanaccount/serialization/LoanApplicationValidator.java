@@ -338,13 +338,6 @@ public final class LoanApplicationValidator {
                 baseDataValidator.reset().parameter(LoanApiConstants.externalIdParameterName).value(externalId).ignoreIfNull()
                         .notExceedingLengthOf(100);
             }
-
-            if (this.fromApiJsonHelper.parameterExists(LoanApiConstants.fundIdParameterName, element)) {
-                final Long fundId = this.fromApiJsonHelper.extractLongNamed(LoanApiConstants.fundIdParameterName, element);
-                baseDataValidator.reset().parameter(LoanApiConstants.fundIdParameterName).value(fundId).ignoreIfNull()
-                        .integerGreaterThanZero();
-            }
-
             if (this.fromApiJsonHelper.parameterExists(LoanApiConstants.loanOfficerIdParameterName, element)) {
                 final Long loanOfficerId = this.fromApiJsonHelper.extractLongNamed(LoanApiConstants.loanOfficerIdParameterName, element);
                 baseDataValidator.reset().parameter(LoanApiConstants.loanOfficerIdParameterName).value(loanOfficerId).ignoreIfNull()
@@ -453,7 +446,6 @@ public final class LoanApplicationValidator {
                     .extractIntegerSansLocaleNamed(LoanApiConstants.amortizationTypeParameterName, element);
             baseDataValidator.reset().parameter(LoanApiConstants.amortizationTypeParameterName).value(amortizationType).notNull()
                     .inMinMaxRange(0, 1);
-
             if (!AmortizationMethod.EQUAL_PRINCIPAL.getValue().equals(amortizationType) && fixedPrincipalPercentagePerInstallment != null) {
                 baseDataValidator.reset().parameter(LoanApiConstants.fixedPrincipalPercentagePerInstallmentParamName).failWithCode(
                         "not.supported.principal.fixing.not.allowed.with.equal.installments",
@@ -934,13 +926,6 @@ public final class LoanApplicationValidator {
                         .notExceedingLengthOf(100);
             }
 
-            if (this.fromApiJsonHelper.parameterExists(LoanApiConstants.fundIdParameterName, element)) {
-                atLeastOneParameterPassedForUpdate = true;
-                final Long fundId = this.fromApiJsonHelper.extractLongNamed(LoanApiConstants.fundIdParameterName, element);
-                baseDataValidator.reset().parameter(LoanApiConstants.fundIdParameterName).value(fundId).ignoreIfNull()
-                        .integerGreaterThanZero();
-            }
-
             if (this.fromApiJsonHelper.parameterExists(LoanApiConstants.loanOfficerIdParameterName, element)) {
                 atLeastOneParameterPassedForUpdate = true;
                 final Long loanOfficerId = this.fromApiJsonHelper.extractLongNamed(LoanApiConstants.loanOfficerIdParameterName, element);
@@ -1016,13 +1001,14 @@ public final class LoanApplicationValidator {
                         .integerGreaterThanZero();
             }
 
-            if (this.fromApiJsonHelper.parameterExists(LoanApiConstants.repaymentFrequencyTypeParameterName, element)) {
-                atLeastOneParameterPassedForUpdate = true;
-                final Integer repaymentEveryType = this.fromApiJsonHelper
-                        .extractIntegerWithLocaleNamed(LoanApiConstants.repaymentFrequencyTypeParameterName, element);
-                baseDataValidator.reset().parameter(LoanApiConstants.repaymentFrequencyTypeParameterName).value(repaymentEveryType)
-                        .notNull().inMinMaxRange(0, 3);
-            }
+            if (this.fromApiJsonHelper.parameterExists(LoanApiConstants.repaymentFrequencyTypeParameterName,
+               element)) {
+               atLeastOneParameterPassedForUpdate = true;
+               final Integer repaymentEveryType = this.fromApiJsonHelper
+               .extractIntegerWithLocaleNamed(LoanApiConstants.repaymentFrequencyTypeParameterName, element);
+               baseDataValidator.reset().parameter(LoanApiConstants.repaymentFrequencyTypeParameterName).value(repaymentEveryType)
+              .notNull().inMinMaxRange(0, 3);
+              }
 
             CalendarUtils.validateNthDayOfMonthFrequency(baseDataValidator, LoanApiConstants.repaymentFrequencyNthDayTypeParameterName,
                     LoanApiConstants.repaymentFrequencyDayOfWeekTypeParameterName, element, this.fromApiJsonHelper);
@@ -1033,6 +1019,13 @@ public final class LoanApplicationValidator {
                 interestType = this.fromApiJsonHelper.extractIntegerWithLocaleNamed(LoanApiConstants.interestTypeParameterName, element);
                 baseDataValidator.reset().parameter(LoanApiConstants.interestTypeParameterName).value(interestType).notNull()
                         .inMinMaxRange(0, 1);
+            }
+            if (this.fromApiJsonHelper.parameterExists(LoanApiConstants.repaymentFrequencyTypeParameterName, element)) {
+                atLeastOneParameterPassedForUpdate = true;
+                final Integer repaymentEveryType = this.fromApiJsonHelper
+                        .extractIntegerWithLocaleNamed(LoanApiConstants.repaymentFrequencyTypeParameterName, element);
+                baseDataValidator.reset().parameter(LoanApiConstants.repaymentFrequencyTypeParameterName).value(repaymentEveryType)
+                        .notNull().inMinMaxRange(0, 3);
             }
 
             if (loanProduct.isLinkedToFloatingInterestRate()) {

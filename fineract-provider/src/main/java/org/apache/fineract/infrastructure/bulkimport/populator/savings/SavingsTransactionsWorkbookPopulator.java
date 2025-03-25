@@ -208,11 +208,14 @@ public class SavingsTransactionsWorkbookPopulator extends AbstractWorkbookPopula
             if (savingsAccount.getMinRequiredOpeningBalance() != null) {
                 writeBigDecimal(TransactionConstants.LOOKUP_OPENING_BALANCE_COL, row, savingsAccount.getMinRequiredOpeningBalance());
             }
-            writeDate(TransactionConstants.LOOKUP_SAVINGS_ACTIVATION_DATE_COL, row,
-                    "" + savingsAccount.getTimeline().getActivatedOnDate().getDayOfMonth() + "/"
-                            + savingsAccount.getTimeline().getActivatedOnDate().getMonthValue() + "/"
-                            + savingsAccount.getTimeline().getActivatedOnDate().getYear(),
-                    dateCellStyle, dateFormat);
+            if (savingsAccount.getActivatedOnDate()!= null) {
+                writeDate(TransactionConstants.LOOKUP_SAVINGS_ACTIVATION_DATE_COL, row,
+                        "" + savingsAccount.getTimeline().getActivatedOnDate().getDayOfMonth() + "/"
+                                + savingsAccount.getTimeline().getActivatedOnDate().getMonthValue() + "/"
+                                + savingsAccount.getTimeline().getActivatedOnDate().getYear(),
+                        dateCellStyle, dateFormat);
+            }
+
         }
     }
 

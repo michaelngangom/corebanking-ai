@@ -53,8 +53,14 @@ public final class ImportHandlerUtils {
         Integer noOfEntries = 0;
         // getLastRowNum and getPhysicalNumberOfRows showing false values
         // sometimes
-        while (sheet.getRow(noOfEntries + 1) != null && sheet.getRow(noOfEntries + 1).getCell(primaryColumn) != null) {
-            noOfEntries++;
+        while (sheet.getRow(noOfEntries + 1) != null) {
+            Cell cell = sheet.getRow(noOfEntries + 1).getCell(primaryColumn);
+
+            if (cell != null && cell.getCellType() != CellType.BLANK) {
+                noOfEntries++;
+            } else {
+                break;
+            }
         }
 
         return noOfEntries;
@@ -106,8 +112,7 @@ public final class ImportHandlerUtils {
                     value = eval.evaluate(c);
 
                     String res = trimEmptyDecimalPortion(value.getStringValue());
-
-                    if (!StringUtils.isNotEmpty(res)) {
+                    if (StringUtils.isNotEmpty(res)) {
                         return res.trim();
                     }
                 } catch (Exception e) {
