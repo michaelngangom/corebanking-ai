@@ -16,35 +16,38 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.fineract.infrastructure.core.config;
+package org.apache.fineract.command;
 
-import org.apache.fineract.infrastructure.core.service.database.RoutingDataSource;
+import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.fineract.command.core.CommandProperties;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@EnableJdbcRepositories(basePackages = "org.apache.fineract.command", transactionManagerRef = "jdbcTransactionManager")
+@Slf4j
 @Configuration
-public class JdbcConfig {
-
-    @Bean
-    public JdbcTemplate jdbcTemplate(RoutingDataSource dataSource) {
-        return new JdbcTemplate(dataSource);
-    }
-
-    @Bean
-    public NamedParameterJdbcTemplate namedParameterJdbcTemplate(RoutingDataSource dataSource) {
-        return new NamedParameterJdbcTemplate(dataSource);
-    }
+@EnableConfigurationProperties(CommandProperties.class)
+@EnableTransactionManagement
+@EnableJdbcRepositories(basePackages = "org.apache.fineract.command", transactionManagerRef = "jdbcTransactionManager")
+@EnableAutoConfiguration
+@EnableAsync
+@PropertySource("classpath:application-test.properties")
+@ComponentScan("org.apache.fineract.command")
+public class TestConfiguration {
 
     @Bean
     @Primary
-    public PlatformTransactionManager jdbcTransactionManager(RoutingDataSource dataSource) {
+    public PlatformTransactionManager jdbcTransactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
 }
