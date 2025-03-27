@@ -56,7 +56,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -116,7 +115,6 @@ import org.apache.fineract.portfolio.loanaccount.loanschedule.data.LoanScheduleD
 import org.apache.fineract.portfolio.loanaccount.loanschedule.domain.LoanApplicationTerms;
 import org.apache.fineract.portfolio.loanaccount.loanschedule.domain.LoanScheduleGenerator;
 import org.apache.fineract.portfolio.loanaccount.loanschedule.domain.LoanScheduleModel;
-import org.apache.fineract.portfolio.loanaccount.loanschedule.domain.LoanScheduleModelPeriod;
 import org.apache.fineract.portfolio.loanproduct.domain.AmortizationMethod;
 import org.apache.fineract.portfolio.loanproduct.domain.CreditAllocationTransactionType;
 import org.apache.fineract.portfolio.loanproduct.domain.InterestCalculationPeriodMethod;
@@ -615,8 +613,6 @@ public class Loan extends AbstractAuditableWithUTCDateTimeCustom<Long> {
         this.interestChargedFromDate = loanApplicationTerms.getInterestChargedFromDate();
         this.submittedOnDate = submittedOnDate != null ? submittedOnDate : DateUtils.getBusinessLocalDate();
 
-        updateLoanSchedule(loanScheduleModel);
-
         updateSummaryWithTotalFeeChargesDueAtDisbursement(deriveSumTotalOfChargesDueAtDisbursement());
 
         // Copy interest recalculation settings if interest recalculation is enabled
@@ -1039,53 +1035,6 @@ public class Loan extends AbstractAuditableWithUTCDateTimeCustom<Long> {
         }
         this.rates.clear();
         this.rates.addAll(loanRates);
-    }
-
-    public void updateLoanSchedule(final LoanScheduleModel modifiedLoanSchedule) {
-        this.repaymentScheduleInstallments.clear();
-        for (final LoanScheduleModelPeriod scheduledLoanInstallment : modifiedLoanSchedule.getPeriods()) {
-
-            if (scheduledLoanInstallment.isRepaymentPeriod() || scheduledLoanInstallment.isDownPaymentPeriod()) {
-                final LoanRepaymentScheduleInstallment installment = new LoanRepaymentScheduleInstallment(this,
-                        scheduledLoanInstallment.periodNumber(), scheduledLoanInstallment.periodFromDate(),
-                        scheduledLoanInstallment.periodDueDate(), scheduledLoanInstallment.principalDue(),
-                        scheduledLoanInstallment.interestDue(), scheduledLoanInstallment.feeChargesDue(),
-                        scheduledLoanInstallment.penaltyChargesDue(), scheduledLoanInstallment.isRecalculatedInterestComponent(),
-                        scheduledLoanInstallment.getLoanCompoundingDetails(), scheduledLoanInstallment.rescheduleInterestPortion(),
-                        scheduledLoanInstallment.isDownPaymentPeriod());
-                addLoanRepaymentScheduleInstallment(installment);
-            }
-        }
-        updateLoanScheduleDependentDerivedFields();
-        updateLoanSummaryDerivedFields();
-    }
-
-    public void updateLoanSchedule(final Collection<LoanRepaymentScheduleInstallment> installments) {
-        List<LoanRepaymentScheduleInstallment> existingInstallments = new ArrayList<>(this.repaymentScheduleInstallments);
-        repaymentScheduleInstallments.clear();
-        for (final LoanRepaymentScheduleInstallment installment : installments) {
-            LoanRepaymentScheduleInstallment existingInstallment = findByInstallmentNumber(existingInstallments,
-                    installment.getInstallmentNumber());
-            if (existingInstallment != null) {
-                Set<LoanInstallmentCharge> existingCharges = existingInstallment.getInstallmentCharges();
-                installment.getInstallmentCharges().addAll(existingCharges);
-                existingCharges.forEach(c -> c.setInstallment(installment));
-                existingInstallment.getInstallmentCharges().clear();
-            }
-            addLoanRepaymentScheduleInstallment(installment);
-        }
-        updateLoanScheduleDependentDerivedFields();
-        updateLoanSummaryDerivedFields();
-    }
-
-    private LoanRepaymentScheduleInstallment findByInstallmentNumber(Collection<LoanRepaymentScheduleInstallment> installments,
-            Integer installmentNumber) {
-        for (LoanRepaymentScheduleInstallment installment : installments) {
-            if (Objects.equals(installment.getInstallmentNumber(), installmentNumber)) {
-                return installment;
-            }
-        }
-        return null;
     }
 
     public void updateLoanScheduleDependentDerivedFields() {

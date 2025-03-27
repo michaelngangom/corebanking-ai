@@ -145,6 +145,7 @@ import org.apache.fineract.portfolio.loanaccount.service.ReplayedTransactionBusi
 import org.apache.fineract.portfolio.loanaccount.service.ReplayedTransactionBusinessEventServiceImpl;
 import org.apache.fineract.portfolio.loanaccount.service.ReprocessLoanTransactionsService;
 import org.apache.fineract.portfolio.loanaccount.service.adjustment.LoanAdjustmentService;
+import org.apache.fineract.portfolio.loanaccount.service.schedule.LoanScheduleComponent;
 import org.apache.fineract.portfolio.loanproduct.domain.LoanProductRepository;
 import org.apache.fineract.portfolio.loanproduct.service.LoanDropdownReadPlatformService;
 import org.apache.fineract.portfolio.loanproduct.service.LoanProductReadPlatformService;
@@ -239,14 +240,15 @@ public class LoanAccountConfiguration {
             LoanCollateralAssembler loanCollateralAssembler, LoanScheduleCalculationPlatformService calculationPlatformService,
             LoanDisbursementDetailsAssembler loanDisbursementDetailsAssembler, LoanChargeMapper loanChargeMapper,
             LoanCollateralManagementMapper loanCollateralManagementMapper, LoanAccrualsProcessingService loanAccrualsProcessingService,
-            LoanDisbursementService loanDisbursementService, LoanChargeService loanChargeService, LoanOfficerService loanOfficerService) {
+            LoanDisbursementService loanDisbursementService, LoanChargeService loanChargeService, LoanOfficerService loanOfficerService,
+            LoanScheduleComponent loanSchedule) {
         return new LoanAssemblerImpl(fromApiJsonHelper, loanRepository, loanProductRepository, clientRepository, groupRepository,
                 fundRepository, staffRepository, codeValueRepository, loanScheduleAssembler, loanChargeAssembler, collateralAssembler,
                 loanRepaymentScheduleTransactionProcessorFactory, holidayRepository, configurationDomainService, workingDaysRepository,
                 rateAssembler, defaultLoanLifecycleStateMachine, externalIdFactory, accountNumberFormatRepository, glimRepository,
                 accountNumberGenerator, glimAccountInfoWritePlatformService, loanCollateralAssembler, calculationPlatformService,
                 loanDisbursementDetailsAssembler, loanChargeMapper, loanCollateralManagementMapper, loanAccrualsProcessingService,
-                loanDisbursementService, loanChargeService, loanOfficerService);
+                loanDisbursementService, loanChargeService, loanOfficerService, loanSchedule);
     }
 
     @Bean
@@ -454,8 +456,8 @@ public class LoanAccountConfiguration {
     @Bean
     @ConditionalOnMissingBean(LoanScheduleService.class)
     public LoanScheduleService loanScheduleService(LoanChargeService loanChargeService,
-            ReprocessLoanTransactionsService reprocessLoanTransactionsService) {
-        return new LoanScheduleService(loanChargeService, reprocessLoanTransactionsService);
+            ReprocessLoanTransactionsService reprocessLoanTransactionsService, LoanScheduleComponent loanSchedule) {
+        return new LoanScheduleService(loanChargeService, reprocessLoanTransactionsService, loanSchedule);
     }
 
     @Bean
