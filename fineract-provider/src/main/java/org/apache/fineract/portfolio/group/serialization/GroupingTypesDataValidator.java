@@ -177,17 +177,19 @@ public final class GroupingTypesDataValidator {
             baseDataValidator.reset().parameter(GroupingTypesApiConstants.externalIdParamName).value(externalId).notExceedingLengthOf(100);
         }
 
-        final Long centerId = this.fromApiJsonHelper.extractLongNamed(GroupingTypesApiConstants.centerIdParamName, element);
-        baseDataValidator.reset().parameter(GroupingTypesApiConstants.centerIdParamName).value(centerId).notNull().integerGreaterThanZero();
+        // final Long centerId = this.fromApiJsonHelper.extractLongNamed(GroupingTypesApiConstants.centerIdParamName,
+        // element);
+        // baseDataValidator.reset().parameter(GroupingTypesApiConstants.centerIdParamName).value(centerId).notNull().integerGreaterThanZero();
 
         // office is inherited from center
         final Long officeId = this.fromApiJsonHelper.extractLongNamed(GroupingTypesApiConstants.officeIdParamName, element);
         baseDataValidator.reset().parameter(GroupingTypesApiConstants.officeIdParamName).value(officeId).notNull().integerGreaterThanZero();
 
-        if (this.fromApiJsonHelper.parameterExists(GroupingTypesApiConstants.staffIdParamName, element)) {
-            final Long staffId = this.fromApiJsonHelper.extractLongNamed(GroupingTypesApiConstants.staffIdParamName, element);
-            baseDataValidator.reset().parameter(GroupingTypesApiConstants.staffIdParamName).value(staffId).integerGreaterThanZero();
-        }
+        // if (this.fromApiJsonHelper.parameterExists(GroupingTypesApiConstants.staffIdParamName, element)) {
+        // final Long staffId = this.fromApiJsonHelper.extractLongNamed(GroupingTypesApiConstants.staffIdParamName,
+        // element);
+        // baseDataValidator.reset().parameter(GroupingTypesApiConstants.staffIdParamName).value(staffId).integerGreaterThanZero();
+        // }
 
         final Boolean active = this.fromApiJsonHelper.extractBooleanNamed(GroupingTypesApiConstants.activeParamName, element);
         if (active != null) {
@@ -251,10 +253,11 @@ public final class GroupingTypesDataValidator {
         final Long officeId = this.fromApiJsonHelper.extractLongNamed(GroupingTypesApiConstants.officeIdParamName, element);
         baseDataValidator.reset().parameter(GroupingTypesApiConstants.officeIdParamName).value(officeId).notNull().integerGreaterThanZero();
 
-        if (this.fromApiJsonHelper.parameterExists(GroupingTypesApiConstants.staffIdParamName, element)) {
-            final Long staffId = this.fromApiJsonHelper.extractLongNamed(GroupingTypesApiConstants.staffIdParamName, element);
-            baseDataValidator.reset().parameter(GroupingTypesApiConstants.staffIdParamName).value(staffId).integerGreaterThanZero();
-        }
+        // if (this.fromApiJsonHelper.parameterExists(GroupingTypesApiConstants.staffIdParamName, element)) {
+        // final Long staffId = this.fromApiJsonHelper.extractLongNamed(GroupingTypesApiConstants.staffIdParamName,
+        // element);
+        // baseDataValidator.reset().parameter(GroupingTypesApiConstants.staffIdParamName).value(staffId).integerGreaterThanZero();
+        // }
 
         final Boolean active = this.fromApiJsonHelper.extractBooleanNamed(GroupingTypesApiConstants.activeParamName, element);
         if (active != null) {
