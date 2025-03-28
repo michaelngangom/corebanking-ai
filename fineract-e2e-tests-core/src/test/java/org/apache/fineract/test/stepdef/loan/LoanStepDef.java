@@ -2489,6 +2489,23 @@ public class LoanStepDef extends AbstractStepDef {
         eventAssertion.assertEventRaised(LoanTransactionAccrualActivityPostEvent.class, accrualTransactionId);
     }
 
+    @Then("LoanAdjustTransactionBusinessEvent is raised on {string}")
+    public void checkLoanAdjustTransactionBusinessEventBusinessEvent(String date) throws IOException {
+        Response<PostLoansResponse> loanCreateResponse = testContext().get(TestContextKey.LOAN_CREATE_RESPONSE);
+        long loanId = loanCreateResponse.body().getLoanId();
+
+        Response<GetLoansLoanIdResponse> loanDetailsResponse = loansApi.retrieveLoan(loanId, false, "transactions", "", "").execute();
+        ErrorHelper.checkSuccessfulApiCall(loanDetailsResponse);
+
+        List<GetLoansLoanIdTransactions> transactions = loanDetailsResponse.body().getTransactions();
+        GetLoansLoanIdTransactions loanAdjustmentTransaction = transactions.stream()
+                .filter(t -> date.equals(FORMATTER.format(t.getDate())) && "Charge-off".equals(t.getType().getValue())).findFirst()
+                .orElseThrow(() -> new IllegalStateException(String.format("No Charge-off reverse replay transaction found on %s", date)));
+        Long loanAdjustmentTransactionId = loanAdjustmentTransaction.getId();
+
+        eventAssertion.assertEventRaised(LoanAdjustTransactionBusinessEvent.class, loanAdjustmentTransactionId);
+    }
+
     @Then("LoanRescheduledDueAdjustScheduleBusinessEvent is raised on {string}")
     public void checkLoanRescheduledDueAdjustScheduleBusinessEvent(String date) throws IOException {
         Response<PostLoansResponse> loanCreateResponse = testContext().get(TestContextKey.LOAN_CREATE_RESPONSE);
