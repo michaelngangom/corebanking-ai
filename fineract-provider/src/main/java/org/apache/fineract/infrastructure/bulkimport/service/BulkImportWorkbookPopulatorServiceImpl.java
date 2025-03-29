@@ -489,7 +489,7 @@ public class BulkImportWorkbookPopulatorServiceImpl implements BulkImportWorkboo
     private List<SavingsAccountData> fetchSavingsAccounts(Long officeId) {
         List<SavingsAccountData> savingsAccounts = null;
         if (officeId != null) {
-            SearchParameters searchParameters = SearchParameters.builder().officeId(officeId).status("300").build();
+            SearchParameters searchParameters = SearchParameters.builder().officeId(officeId).build();
             savingsAccounts = savingsAccountReadPlatformService.retrieveAll(searchParameters).getPageItems();
         } else {
             SearchParameters searchParameters = SearchParameters.builder().status("300").build();

@@ -23,6 +23,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.fineract.portfolio.loanaccount.domain.transactionprocessor.LoanRepaymentScheduleTransactionProcessor;
 import org.apache.fineract.portfolio.loanaccount.exception.LoanTransactionProcessingStrategyNotFoundException;
+import org.apache.fineract.portfolio.loanaccount.exception.LoanTransactionProcessingStrategyNotFoundException;
 import org.apache.fineract.portfolio.loanproduct.data.TransactionProcessingStrategyData;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -43,6 +44,7 @@ public class LoanRepaymentScheduleTransactionProcessorFactory {
 
         if (processor.isEmpty() && Boolean.TRUE.equals(errorNotFoundFail)) {
             throw new LoanTransactionProcessingStrategyNotFoundException(transactionProcessingStrategy);
+
         } else {
             return processor.orElse(defaultLoanRepaymentScheduleTransactionProcessor);
         }

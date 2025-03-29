@@ -20,9 +20,11 @@ package org.apache.fineract.infrastructure.bulkimport.populator;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.apache.fineract.organisation.office.data.OfficeData;
@@ -79,7 +81,7 @@ public abstract class AbstractWorkbookPopulator implements WorkbookPopulator {
             }
             LocalDate date1 = LocalDate.parse(value, formatinDB);
             DateTimeFormatter expectedFormat = new DateTimeFormatterBuilder().appendPattern(dateFormat).toFormatter();
-            row.createCell(colIndex).setCellValue(expectedFormat.format(date1));
+            row.createCell(colIndex).setCellValue(Date.from(date1.atStartOfDay(ZoneId.systemDefault()).toInstant()));
             row.getCell(colIndex).setCellStyle(dateCellStyle);
         } catch (DateTimeParseException pe) {
             throw new IllegalArgumentException(pe);
@@ -116,6 +118,7 @@ public abstract class AbstractWorkbookPopulator implements WorkbookPopulator {
         dateCellStyle.setDataFormat(df);
         int rowIndex = 0;
         DateTimeFormatter outputFormat = new DateTimeFormatterBuilder().appendPattern(dateFormat).toFormatter();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         try {
             if (clients != null) {
                 for (ClientData client : clients) {
@@ -126,7 +129,7 @@ public abstract class AbstractWorkbookPopulator implements WorkbookPopulator {
                     writeString(nameCol, row, client.getDisplayName().replaceAll("[ )(] ", "_") + "(" + client.getId() + ")");
 
                     if (client.getActivationDate() != null) {
-                        writeDate(activationDateCol, row, outputFormat.format(client.getActivationDate()), dateCellStyle, dateFormat);
+                        writeDate(activationDateCol, row, client.getActivationDate().format(formatter), dateCellStyle, dateFormat);
                     }
                     if (containsClientExtId) {
                         if (!client.getExternalId().isEmpty()) {
