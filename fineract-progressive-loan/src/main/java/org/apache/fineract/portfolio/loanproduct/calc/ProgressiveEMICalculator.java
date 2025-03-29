@@ -264,7 +264,11 @@ public final class ProgressiveEMICalculator implements EMICalculator {
         boolean onePeriodIsUnpaid = notFullyRepaidRepaymentPeriodCount == 1L;
         if (!targetDate.isAfter(repaymentPeriod.getFromDate())) {
             if (multiplePeriodIsUnpaid) {
-                repaymentPeriod.setEmi(repaymentPeriod.getOriginalEmi());
+                Money totalOutstanding = recalculatedScheduleModelTillDate.getTotalOutstandingPrincipal()
+                        .plus(recalculatedScheduleModelTillDate.getTotalOutstandingInterest());
+                Money newEmi = totalOutstanding.isLessThan(repaymentPeriod.getOriginalEmi()) ? totalOutstanding
+                        : repaymentPeriod.getOriginalEmi();
+                repaymentPeriod.setEmi(newEmi);
             } else if (repaymentPeriod.isFullyPaid() && onePeriodIsUnpaid) {
                 repaymentPeriod.setEmi(MathUtil.min(repaymentPeriod.getOriginalEmi(), //
                         recalculatedScheduleModelTillDate.getTotalDuePrincipal() //
